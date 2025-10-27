@@ -1,3 +1,3 @@
-module profit.calculator/m
+module example.com/bank
 
 go 1.21.13
