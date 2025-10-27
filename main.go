@@ -23,8 +23,9 @@ func main() {
 	fmt.Print(formattedRatio)
 }
 
-func getEbt(revenue, expenses float64) float64 {
-	return revenue - expenses
+func getEbt(revenue, expenses float64) (ebt float64) {
+	ebt = revenue - expenses
+	return
 }
 
 func getProfitRatio(ebt, taxRate float64) (float64, float64) {
