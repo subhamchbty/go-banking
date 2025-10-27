@@ -23,6 +23,7 @@ func main() {
 	fmt.Print(formattedRatio)
 }
 
+// confusing early return value declaration
 func getEbt(revenue, expenses float64) (ebt float64) {
 	ebt = revenue - expenses
 	return
