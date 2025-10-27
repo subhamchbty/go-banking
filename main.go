@@ -19,5 +19,5 @@ func main() {
 
 	fmt.Println("Earnings before tax:", ebt)
 	fmt.Println("Profit:", profit)
-	fmt.Println("Earning ratio:", ratio)
+	fmt.Printf("Earning ratio: %.3f\n", ratio)
 }
