@@ -13,13 +13,23 @@ func main() {
 	fmt.Print("Enter expenses: ")
 	fmt.Scan(&expenses)
 
-	ebt := revenue - expenses
-	profit := ebt * (1 - taxRate/100)
-	ratio := ebt / profit
+	ebt := getEbt(revenue, expenses)
+	profit, ratio := getProfitRatio(ebt, taxRate)
 
 	formattedRatio := fmt.Sprintf("Earning ratio: %.3f\n", ratio)
 
 	fmt.Println("Earnings before tax:", ebt)
 	fmt.Println("Profit:", profit)
 	fmt.Print(formattedRatio)
+}
+
+func getEbt(revenue, expenses float64) float64 {
+	return revenue - expenses
+}
+
+func getProfitRatio(ebt, taxRate float64) (float64, float64) {
+	profit := ebt * (1 - taxRate/100)
+	ratio := ebt / profit
+
+	return profit, ratio
 }
