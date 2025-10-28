@@ -2,86 +2,71 @@ package main
 
 import (
 	"fmt"
-
-	"example.com/bank/fileops"
+	"log"
 )
 
 const balanceFile string = "balance.txt"
 
 func main() {
+	bank, err := NewBank(balanceFile)
+	if err != nil {
+		log.Fatalf("Failed to initialize bank: %v\n", err)
+	}
+
 	fmt.Println("Hello, Welcome!")
-	balance, _ := fileops.ReadValueFromFile(balanceFile)
 
 	for {
 		showOptions()
 
-		var choice int
-		fmt.Print(": ")
-		fmt.Scan(&choice)
+		choice := getUserChoice()
 
 		switch choice {
 		case 1:
-			// check balance
-			balance, err := fileops.ReadValueFromFile(balanceFile)
-
-			if err != nil {
-				fmt.Printf("Error: %s.\n", err)
-				continue
-			}
-
-			fmt.Printf("Your current balance: %.2f.\n", balance)
+			handleCheckBalance(bank)
 		case 2:
-			// withdraw amount
-			var withdrawalAmount float64
-			fmt.Print("Enter an amount: ")
-			fmt.Scan(&withdrawalAmount)
-
-			if withdrawalAmount < 0 {
-				fmt.Println("Error: amount must be a positive.")
-				continue
-			}
-
-			if withdrawalAmount > balance {
-				fmt.Println("Error: amount must be less than current balance.")
-				continue
-			}
-
-			balance -= withdrawalAmount
-
-			err := fileops.WriteValueToFile(balance, balanceFile)
-
-			if err != nil {
-				fmt.Printf("Error: %s.\n", err)
-				continue
-			}
-
-			fmt.Printf("You have withdrawn %.2f. New balance is %.2f.\n", withdrawalAmount, balance)
+			handleWithdraw(bank)
 		case 3:
-			// deposit amount
-			var depositAmount float64
-
-			fmt.Print("Enter amount: ")
-			fmt.Scan(&depositAmount)
-
-			if depositAmount < 0 {
-				fmt.Println("Error: amount should be a positive.")
-				continue
-			}
-
-			balance += depositAmount
-
-			err := fileops.WriteValueToFile(balance, balanceFile)
-
-			if err != nil {
-				fmt.Printf("Error: %s.\n", err)
-				continue
-			}
-
-			fmt.Printf("You have deposited %.2f. New balance is %.2f.\n", depositAmount, balance)
+			handleDeposit(bank)
 		default:
-			// exit
 			fmt.Println("Goodbye!")
 			return
 		}
 	}
+}
+
+func getUserChoice() int {
+	var choice int
+	fmt.Print(": ")
+	fmt.Scan(&choice)
+	return choice
+}
+
+func handleCheckBalance(bank *Bank) {
+	fmt.Printf("Your current balance: %.2f\n", bank.GetBalance())
+}
+
+func handleWithdraw(bank *Bank) {
+	var amount float64
+	fmt.Print("Enter an amount: ")
+	fmt.Scan(&amount)
+
+	if err := bank.Withdraw(amount); err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("You have withdrawn %.2f. New balance is %.2f\n", amount, bank.GetBalance())
+}
+
+func handleDeposit(bank *Bank) {
+	var amount float64
+	fmt.Print("Enter amount: ")
+	fmt.Scan(&amount)
+
+	if err := bank.Deposit(amount); err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("You have deposited %.2f. New balance is %.2f\n", amount, bank.GetBalance())
 }
